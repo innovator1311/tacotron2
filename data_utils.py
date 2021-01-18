@@ -29,10 +29,11 @@ class TextMelLoader(torch.utils.data.Dataset):
 
     def get_mel_text_pair(self, audiopath_and_text):
         # separate filename and text
-        audiopath, text = audiopath_and_text[0], audiopath_and_text[1]
+        audiopath, text, embed = audiopath_and_text[1], audiopath_and_text[2], audiopath_and_text[2]
         text = self.get_text(text)
         mel = self.get_mel(audiopath)
-        return (text, mel)
+        embed = torch.from_numpy(np.load(embed))
+        return (text, mel, embed)
 
     def get_mel(self, filename):
         if not self.load_mel_from_disk:
@@ -107,5 +108,8 @@ class TextMelCollate():
             gate_padded[i, mel.size(1)-1:] = 1
             output_lengths[i] = mel.size(1)
 
+        # speaker embded loaded
+        embed = torch.FloatTensor(batch[0][2])
+
         return text_padded, input_lengths, mel_padded, gate_padded, \
-            output_lengths
+            output_lengths, embed

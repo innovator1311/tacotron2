@@ -497,12 +497,17 @@ class Tacotron2(nn.Module):
         return outputs
 
     def forward(self, inputs):
-        text_inputs, text_lengths, mels, max_len, output_lengths = inputs
+        text_inputs, text_lengths, mels, max_len, output_lengths, embed = inputs
         text_lengths, output_lengths = text_lengths.data, output_lengths.data
 
         embedded_inputs = self.embedding(text_inputs).transpose(1, 2)
 
         encoder_outputs = self.encoder(embedded_inputs, text_lengths)
+
+        ### FIXED 
+        embed = embed.expand(embed.size(0), encoder_outputs.size(1), embed.size(2))
+        encoder_outputs = torch.cat((encoder_outputs, embed), 2)
+        ###
 
         mel_outputs, gate_outputs, alignments = self.decoder(
             encoder_outputs, mels, memory_lengths=text_lengths)

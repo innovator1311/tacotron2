@@ -17,7 +17,13 @@ def load_wav_to_torch(full_path):
 
 def load_filepaths_and_text(filename, split="|"):
     with open(filename, encoding='utf-8') as f:
-        filepaths_and_text = [line.strip().split(split) for line in f]
+        #filepaths_and_text = [line.strip().split(split) for line in f]
+        for line in f:
+            lines = line.strip().split(split)
+            lines[0] = '/SV2TTS/audio/' + lines[0]
+            lines[1] = '/SV2TTS/mels/' + lines[0]
+            lines[2] = '/SV2TTS/embeds/' + lines[0]
+            filepaths_and_text +=  lines
     return filepaths_and_text
 
 

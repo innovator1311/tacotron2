@@ -1,9 +1,9 @@
 """ from https://github.com/keithito/tacotron """
+'''
 import re
 from text import cleaners
 from text.symbols import symbols
 
-###TESTING####
 
 # Mappings from symbol to numeric ID and vice versa:
 _symbol_to_id = {s: i for i, s in enumerate(symbols)}
@@ -14,18 +14,6 @@ _curly_re = re.compile(r'(.*?)\{(.+?)\}(.*)')
 
 
 def text_to_sequence(text, cleaner_names):
-  '''Converts a string of text to a sequence of IDs corresponding to the symbols in the text.
-
-    The text can optionally have ARPAbet sequences enclosed in curly braces embedded
-    in it. For example, "Turn left on {HH AW1 S S T AH0 N} Street."
-
-    Args:
-      text: string to convert to a sequence
-      cleaner_names: names of the cleaner functions to run the text through
-
-    Returns:
-      List of integers corresponding to the symbols in the text
-  '''
   sequence = []
 
   # Check for curly braces and treat their contents as ARPAbet:
@@ -42,7 +30,6 @@ def text_to_sequence(text, cleaner_names):
 
 
 def sequence_to_text(sequence):
-  '''Converts a sequence of IDs back to a string'''
   result = ''
   for symbol_id in sequence:
     if symbol_id in _id_to_symbol:
@@ -73,3 +60,61 @@ def _arpabet_to_sequence(text):
 
 def _should_keep_symbol(s):
   return s in _symbol_to_id and s is not '_' and s is not '~'
+ '''
+import re
+import os, sys
+#from text.symbols import symbols
+
+def blockPrint():
+    sys.stdout = open(os.devnull, 'w')
+
+# Restore
+def enablePrint():
+    sys.stdout = sys.__stdout__
+
+symbols =['ɯəj', 'ɤ̆j', 'ʷiə', 'ɤ̆w', 'ɯəw', 'ʷet', 'iəw', 'uəj', 'ʷen', 'tʰw', 'ʷɤ̆', 'ʷiu', 'kwi', 'ŋ͡m', 'k͡p', 'cw', 'jw', 'uə', 'eə', 'bw', 'oj', 'ʷi', 'vw', 'ăw', 'ʈw', 'ʂw', 'aʊ', 'fw', 'ɛu', 'tʰ', 'tʃ', 'ɔɪ', 'xw', 'ʷɤ', 'ɤ̆', 'ŋw', 'ʊə', 'zi', 'ʷă', 'dw', 'eɪ', 'aɪ', 'ew', 'iə', 'ɣw', 'zw', 'ɯj', 'ʷɛ', 'ɯw', 'ɤj', 'ɔ:', 'əʊ', 'ʷa', 'mw', 'ɑ:', 'hw', 'ɔj', 'uj', 'lw', 'ɪə', 'ăj', 'u:', 'aw', 'ɛj', 'iw', 'aj', 'ɜ:', 'kw', 'nw', 't∫', 'ɲw', 'eo', 'sw', 'tw', 'ʐw', 'iɛ', 'ʷe', 'i:', 'ɯə', 'dʒ', 'ɲ', 'θ', 'ʌ', 'l', 'w', '1', 'ɪ', 'ɯ', 'd', '∫', 'p', 'ə', 'u', 'o', '3', 'ɣ', '!', 'ð', 'ʧ', '6', 'ʒ', 'ʐ', 'z', 'v', 'g', 'ă', '_', 'æ', 'ɤ', '2', 'ʤ', 'i', '.', 'ɒ', 'b', 'h', 'n', 'ʂ', 'ɔ', 'ɛ', 'k', 'm', '5', ' ', 'c', 'j', 'x', 'ʈ', ',', '4', 'ʊ', 's', 'ŋ', 'a', 'ʃ', '?', 'r', ':', 'η', 'f', ';', 'e', 't', "'"]
+
+abortsym =["","[","]","/"]
+
+_symbol_to_id = {s: i for i, s in enumerate(symbols)}
+_id_to_symbol = {i: s for i, s in enumerate(symbols)}
+from viphoneme import syms, vi2IPA_split
+
+def text_to_sequence(text,cleaner):
+    #print(text)
+    blockPrint()
+    cleaner="vinorm"
+    delimit="/"
+    #Preprocess in NormText to reduce usage of gpu
+    '''
+    text=re.sub(re.compile(r'\s+'), ' ', text)
+    text=text.rstrip(".").rstrip("?").rstrip("!").rstrip(" ")
+    ipa = vi2IPA_split(text,delimit)
+    '''
+    ipa = text
+    #
+    sequence = []
+    phonemes =ipa.split(delimit)
+    
+        
+    #phonemes=["!"]
+    for pho in phonemes:
+        if pho in _symbol_to_id and pho not in abortsym:
+            sequence.append(_symbol_to_id[pho])
+    enablePrint()
+    #print(sequence)
+    return sequence
+
+def sequence_to_text(sequence,delimit):
+    result = ''
+    for symbol_id in sequence:
+        if symbol_id in _id_to_symbol:
+            s = _id_to_symbol[symbol_id]
+            result += delimit+s
+    return result
+
+#Task
+#split ra punc, english, pad => sắp xếp lại thứ tự
+#Những từ không dấu sẽ không thêm số
+#gộp những từ có dấu thành một mã mới , => mid tone
+
