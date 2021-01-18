@@ -157,17 +157,17 @@ class Encoder(nn.Module):
         convolutions = []
         for _ in range(hparams.encoder_n_convolutions):
             conv_layer = nn.Sequential(
-                ConvNorm(hparams.encoder_embedding_dim,
-                         hparams.encoder_embedding_dim,
+                ConvNorm(hparams.encoder_old_embedding_dim,
+                         hparams.encoder_old_embedding_dim,
                          kernel_size=hparams.encoder_kernel_size, stride=1,
                          padding=int((hparams.encoder_kernel_size - 1) / 2),
                          dilation=1, w_init_gain='relu'),
-                nn.BatchNorm1d(hparams.encoder_embedding_dim))
+                nn.BatchNorm1d(hparams.encoder_old_embedding_dim))
             convolutions.append(conv_layer)
         self.convolutions = nn.ModuleList(convolutions)
 
-        self.lstm = nn.LSTM(hparams.encoder_embedding_dim,
-                            int(hparams.encoder_embedding_dim / 2), 1,
+        self.lstm = nn.LSTM(hparams.encoder_old_embedding_dim,
+                            int(hparams.encoder_old_embedding_dim / 2), 1,
                             batch_first=True, bidirectional=True)
 
     def forward(self, x, input_lengths):
@@ -472,7 +472,7 @@ class Tacotron2(nn.Module):
 
     def parse_batch(self, batch):
         text_padded, input_lengths, mel_padded, gate_padded, \
-            output_lengths = batch
+            output_lengths, embed = batch
         text_padded = to_gpu(text_padded).long()
         input_lengths = to_gpu(input_lengths).long()
         max_len = torch.max(input_lengths.data).item()
@@ -480,8 +480,10 @@ class Tacotron2(nn.Module):
         gate_padded = to_gpu(gate_padded).float()
         output_lengths = to_gpu(output_lengths).long()
 
+        embed = to_gpu(embed).float()
+
         return (
-            (text_padded, input_lengths, mel_padded, max_len, output_lengths),
+            (text_padded, input_lengths, mel_padded, max_len, output_lengths, embed),
             (mel_padded, gate_padded))
 
     def parse_output(self, outputs, output_lengths=None):
@@ -501,13 +503,21 @@ class Tacotron2(nn.Module):
         text_lengths, output_lengths = text_lengths.data, output_lengths.data
 
         embedded_inputs = self.embedding(text_inputs).transpose(1, 2)
-
+      
         encoder_outputs = self.encoder(embedded_inputs, text_lengths)
 
+        #print(embed.shape)
+        #print(encoder_outputs.shape)
+
+        #print(encoder_outputs.shape)
+
         ### FIXED 
+        embed = embed.unsqueeze(1)
         embed = embed.expand(embed.size(0), encoder_outputs.size(1), embed.size(2))
         encoder_outputs = torch.cat((encoder_outputs, embed), 2)
         ###
+
+        #print(encoder_outputs.shape)
 
         mel_outputs, gate_outputs, alignments = self.decoder(
             encoder_outputs, mels, memory_lengths=text_lengths)

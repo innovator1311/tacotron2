@@ -29,7 +29,7 @@ class TextMelLoader(torch.utils.data.Dataset):
 
     def get_mel_text_pair(self, audiopath_and_text):
         # separate filename and text
-        audiopath, text, embed = audiopath_and_text[1], audiopath_and_text[2], audiopath_and_text[2]
+        audiopath, embed, text = audiopath_and_text[1], audiopath_and_text[2], audiopath_and_text[-1]
         text = self.get_text(text)
         mel = self.get_mel(audiopath)
         embed = torch.from_numpy(np.load(embed))
@@ -47,7 +47,11 @@ class TextMelLoader(torch.utils.data.Dataset):
             melspec = self.stft.mel_spectrogram(audio_norm)
             melspec = torch.squeeze(melspec, 0)
         else:
+            #print("File name, ", filename)
             melspec = torch.from_numpy(np.load(filename))
+            #melspec = melspec[:,:80]
+            melspec = melspec.permute(1,0)
+            #print(melspec.shape)
             assert melspec.size(0) == self.stft.n_mel_channels, (
                 'Mel dimension mismatch: given {}, expected {}'.format(
                     melspec.size(0), self.stft.n_mel_channels))
@@ -92,24 +96,28 @@ class TextMelCollate():
         # Right zero-pad mel-spec
         num_mels = batch[0][1].size(0)
         max_target_len = max([x[1].size(1) for x in batch])
+        #print(max_target_len)
         if max_target_len % self.n_frames_per_step != 0:
             max_target_len += self.n_frames_per_step - max_target_len % self.n_frames_per_step
             assert max_target_len % self.n_frames_per_step == 0
 
-        # include mel padded and gate padded
+        # include mel padded and gate padded # and embed
         mel_padded = torch.FloatTensor(len(batch), num_mels, max_target_len)
         mel_padded.zero_()
         gate_padded = torch.FloatTensor(len(batch), max_target_len)
         gate_padded.zero_()
+        embed_tensor = torch.FloatTensor(len(batch), 256)
+
         output_lengths = torch.LongTensor(len(batch))
         for i in range(len(ids_sorted_decreasing)):
             mel = batch[ids_sorted_decreasing[i]][1]
+            embedd = batch[ids_sorted_decreasing[i]][2]
+
             mel_padded[i, :, :mel.size(1)] = mel
             gate_padded[i, mel.size(1)-1:] = 1
             output_lengths[i] = mel.size(1)
-
-        # speaker embded loaded
-        embed = torch.FloatTensor(batch[0][2])
+            embed_tensor[i, :256] = embedd 
+        
 
         return text_padded, input_lengths, mel_padded, gate_padded, \
-            output_lengths, embed
+            output_lengths, embed_tensor

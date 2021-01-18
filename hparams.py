@@ -25,21 +25,27 @@ def create_hparams(hparams_string=None, verbose=False):
         # Data Parameters             #
         ################################
         load_mel_from_disk=True,
-        training_files='filelists/ljs_audio_text_train_filelist.txt',
-        validation_files='filelists/ljs_audio_text_val_filelist.txt',
+        training_files='../SV2TTS/synthesizer/train.txt',
+        validation_files='../SV2TTS/synthesizer/train.txt',
         text_cleaners=['english_cleaners'],
 
         ################################
         # Audio Parameters             #
         ################################
         max_wav_value=32768.0,
-        sampling_rate=22050,
+        #sampling_rate=22050,
         filter_length=1024,
-        hop_length=256,
-        win_length=1024,
+        #hop_length=256,
+        #win_length=1024,
         n_mel_channels=80,
         mel_fmin=0.0,
-        mel_fmax=8000.0,
+        #mel_fmax=8000.0,
+
+        n_fft=800,  # Extra window size is filled with 0 paddings to match this parameter
+        hop_length=200,  # For 16000Hz, 200 = 12.5 ms (0.0125 * sample_rate)
+        win_length=800,  # For 16000Hz, 800 = 50 ms (If None, win_size = n_fft) (0.05 * sample_rate)
+        sampling_rate=16000,
+        mel_fmax=900.0,
 
         ################################
         # Model Parameters             #
@@ -48,9 +54,11 @@ def create_hparams(hparams_string=None, verbose=False):
         symbols_embedding_dim=512,
 
         # Encoder parameters
+        #encoder_kernel_size=5,
         encoder_kernel_size=5,
         encoder_n_convolutions=3,
-        encoder_embedding_dim=512,
+        encoder_old_embedding_dim=512,
+        encoder_embedding_dim=768,
 
         # Decoder parameters
         n_frames_per_step=1,  # currently only 1 is supported
