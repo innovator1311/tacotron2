@@ -19,15 +19,19 @@ def create_hparams(hparams_string=None, verbose=False):
         dist_url="tcp://localhost:54321",
         cudnn_enabled=True,
         cudnn_benchmark=False,
-        ignore_layers=['embedding.weight'],
+        ignore_layers=[''],
 
         ################################
         # Data Parameters             #
         ################################
         load_mel_from_disk=True,
-        training_files='../SV2TTS/synthesizer/train.txt',
-        validation_files='../SV2TTS/synthesizer/train.txt',
-        text_cleaners=['english_cleaners'],
+        
+        training_files='../SV2TTS/synthesizer/train.txt', #MUST CHANGE
+        validation_files='../SV2TTS/synthesizer/train.txt', #MUST CHANE
+        mel_path='../SV2TTS/synthesizer/mels/', #MUST CHANGE
+        embed_path='../SV2TTS/synthesizer/embeds/', #MUST CHANE
+        
+        text_cleaners=['basic_cleaners'],
 
         ################################
         # Audio Parameters             #

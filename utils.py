@@ -2,6 +2,8 @@ import numpy as np
 from scipy.io.wavfile import read
 import torch
 
+from hparams import create_hparams
+hparmas = create_hparams()
 
 def get_mask_from_lengths(lengths):
     max_len = torch.max(lengths).item()
@@ -21,9 +23,9 @@ def load_filepaths_and_text(filename, split="|"):
         #filepaths_and_text = [line.strip().split(split) for line in f]
         for line in f:
             lines = line.strip().split(split)
-            lines[0] = '../SV2TTS/synthesizer/audio/' + lines[0]
-            lines[1] = '../SV2TTS/synthesizer/mels/' + lines[1]
-            lines[2] = '../SV2TTS/synthesizer/embeds/' + lines[2]
+            
+            lines[1] = hparmas.mel_path + lines[1]
+            lines[2] = hparmas.embed_path + lines[2]
             #print(lines)
             filepaths_and_text.append(lines)
     return filepaths_and_text
