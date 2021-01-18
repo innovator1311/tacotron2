@@ -27,7 +27,7 @@ def create_hparams(hparams_string=None, verbose=False):
         load_mel_from_disk=True,
 
         training_files='../SV2TTS/synthesizer/train.txt', #MUST CHANGE
-        validation_files='../SV2TTS/synthesizer/train.txt', #MUST CHANE
+        validation_files='../SV2TTS/synthesizer/valid.txt', #MUST CHANE
         mel_path='../SV2TTS/synthesizer/mels/', #MUST CHANGE
         embed_path='../SV2TTS/synthesizer/embeds/', #MUST CHANE
         
