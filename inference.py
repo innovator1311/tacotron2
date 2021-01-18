@@ -26,6 +26,8 @@ from audio_processing import griffin_lim
 from train import load_model
 from text import text_to_sequence
 #from denoiser import Denoiser
+import scipy
+#import scipy.io.wavfile.write as write
 
 from resemblyzer import VoiceEncoder, preprocess_wav
 from pathlib import Path
@@ -37,13 +39,13 @@ delimit ="/"
 hparams = create_hparams()
 hparams.sampling_rate = 22050
 
-
+## config here
 checkpoint_path = "../drive/MyDrive/MultiSpeaker_Tacotron2/checkpoints/checkpoint_0"
 model = load_model(hparams)
 model.load_state_dict(torch.load(checkpoint_path)['state_dict'])
 _ = model.cuda().eval().half()
 
-
+## config here
 waveglow_path = '../drive/MyDrive/MultiSpeaker_Tacotron2/checkpoints/waveglow_256channels_universal_v5.pt'
 waveglow = torch.load(waveglow_path)['model']
 waveglow.cuda().eval().half()
@@ -51,7 +53,7 @@ for k in waveglow.convinv:
     k.float()
 #denoiser = Denoiser(waveglow)
 
-
+## config here
 text = "đây là câu thoại đơn giản"
 text = vi2IPA_split(text, delimit)
 sequence = np.array(text_to_sequence(text, ['english_cleaners']))[None, :]
@@ -60,6 +62,7 @@ sequence = torch.autograd.Variable(
 
 
 ### 
+## config here
 fpath = Path("../1320_00000.mp3")
 wav = preprocess_wav(fpath)
 
@@ -78,6 +81,7 @@ mel_outputs, mel_outputs_postnet, _, alignments = model.inference(sequence, embe
 with torch.no_grad():
     audio = waveglow.infer(mel_outputs_postnet, sigma=0.666)
 
+scipy.io.wavfile.write("../test.wav", hparams.sampling_rate, audio[0].cpu().numpy())
 #audio_denoised = denoiser(audio, strength=0.01)[:, 0]
 #ipd.Audio(audio_denoised.cpu().numpy(), rate=hparams.sampling_rate) 
 
