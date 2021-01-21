@@ -10,7 +10,6 @@ from text import text_to_sequence
 from resemblyzer import VoiceEncoder, preprocess_wav
 from pathlib import Path
 
-
 class TextMelLoader(torch.utils.data.Dataset):
     """
         1) loads audio,text pairs
@@ -29,6 +28,7 @@ class TextMelLoader(torch.utils.data.Dataset):
             hparams.mel_fmax)
         random.seed(hparams.seed)
         random.shuffle(self.audiopaths_and_text)
+        self.hparams = hparams
 
     def get_mel_text_pair(self, audiopath_and_text):
         # separate filename and text
@@ -40,6 +40,10 @@ class TextMelLoader(torch.utils.data.Dataset):
 
     def get_mel(self, filename):
         if not self.load_mel_from_disk:
+
+            folder = filename.split("/")[-1].split("_")[0]
+            full_path = preprocess_path + "wavs/" + folder + "/" + filename
+
             audio, sampling_rate = load_wav_to_torch(filename)
             if sampling_rate != self.stft.sampling_rate:
                 raise ValueError("{} {} SR doesn't match target {} SR".format(
@@ -52,8 +56,8 @@ class TextMelLoader(torch.utils.data.Dataset):
             #Do the saving
             np.save("../vivos_preprocess/mels/{}".format(filename), melspec)
 
-            fpath = Path("path_to_an_audio_file")
-            wav = preprocess_wav(file)
+            fpath = Path(full_path)
+            wav = preprocess_wav(fpath)
 
             encoder = VoiceEncoder()
             embed = encoder.embed_utterance(wav)

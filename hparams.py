@@ -26,16 +26,19 @@ def create_hparams(hparams_string=None, verbose=False):
         ################################
         load_mel_from_disk=True,
 
-        training_files='../SV2TTS/synthesizer/train.txt', #MUST CHANGE
+        training_files='../vivos/train/prompts.txt', #MUST CHANGE
+        preprocess_path='../vivos/train'
         validation_files='../SV2TTS/synthesizer/valid.txt', #MUST CHANE
         mel_path='../SV2TTS/synthesizer/mels/', #MUST CHANGE
         embed_path='../SV2TTS/synthesizer/embeds/', #MUST CHANE
         
+
         text_cleaners=['basic_cleaners'],
 
         ################################
         # Audio Parameters             #
         ################################
+        
         max_wav_value=32768.0,
         #sampling_rate=22050,
         filter_length=1024,
