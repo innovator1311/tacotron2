@@ -18,7 +18,7 @@ class TextMelLoader(torch.utils.data.Dataset):
     """
     def __init__(self, audiopaths_and_text, hparams):
         
-        print("Enter loader")
+        #print("Enter loader")
 
         self.audiopaths_and_text = load_filepaths_and_text(audiopaths_and_text)
         self.text_cleaners = hparams.text_cleaners
@@ -48,12 +48,10 @@ class TextMelLoader(torch.utils.data.Dataset):
         print("Enter here first")
         if not self.load_mel_from_disk:
 
-            print("Enter here")
+            
+            full_path = "normalized/" + filename + ".wav"
 
-            folder = filename.split("/")[-1].split("_")[0]
-            full_path = preprocess_path + "wavs/" + folder + "/" + filename
-
-            audio, sampling_rate = load_wav_to_torch(filename)
+            audio, sampling_rate = load_wav_to_torch(full_path)
             if sampling_rate != self.stft.sampling_rate:
                 raise ValueError("{} {} SR doesn't match target {} SR".format(
                     sampling_rate, self.stft.sampling_rate))

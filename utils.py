@@ -23,24 +23,20 @@ def load_wav_to_torch(full_path):
 def load_filepaths_and_text(filename, split=" "):
 
     filepaths_and_text = []
-    print(filename)
-    name = filename.split("/")[-1].split(".")[0]
-    new_file_name = hparmas.preprocess_path + "/" + name + "_new.txt"
-
-    print(new_file_name)
-
-    with open(new_file_name, 'w') as new_f:
-        with open(filename, encoding='utf-8') as f:
-            #filepaths_and_text = [line.strip().split(split) for line in f]
-            for line in f:
-                lines = line.strip().split(split, 1)
-                lines[1] = vi2IPA_split(lines[1], delimit)
-                
-                #lines[1] = hparmas.mel_path + lines[1]
-                #lines[2] = hparmas.embed_path + lines[2]
-                #print(lines)
-                filepaths_and_text.append(lines)
-                new_f.write("|".join(lines) + "\n")
+    
+    with open(filename, encoding='utf-8') as f:
+        #filepaths_and_text = [line.strip().split(split) for line in f]
+        for line in f:
+            
+            lines = line.strip().split(split, 1)
+            #lines[1] = vi2IPA_split(lines[1], delimit)
+            
+            #lines[1] = hparmas.mel_path + lines[1]
+            #lines[2] = hparmas.embed_path + lines[2]
+            #print(lines)
+            filepaths_and_text.append(lines)
+            new_f.write("|".join(lines) + "\n")
+            
     return filepaths_and_text
 
 

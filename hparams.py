@@ -26,7 +26,7 @@ def create_hparams(hparams_string=None, verbose=False):
         ################################
         load_mel_from_disk=False,
 
-        training_files='../vivos/train/prompts.txt', #MUST CHANGE
+        training_files='../train.txt', #MUST CHANGE
         preprocess_path='../vivos/train',
         validation_files='../SV2TTS/synthesizer/valid.txt', #MUST CHANE
         mel_path='../SV2TTS/synthesizer/mels/', #MUST CHANGE
