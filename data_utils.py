@@ -39,7 +39,11 @@ class TextMelLoader(torch.utils.data.Dataset):
         return (text, mel, embed)
 
     def get_mel(self, filename):
+
+        print("Enter here first")
         if not self.load_mel_from_disk:
+
+            print("Enter here")
 
             folder = filename.split("/")[-1].split("_")[0]
             full_path = preprocess_path + "wavs/" + folder + "/" + filename
