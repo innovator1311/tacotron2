@@ -26,6 +26,8 @@ def load_filepaths_and_text(filename, split=" "):
     name = filename.split(".")[0]
     new_file_name = name + "_new.txt"
 
+    print(new_file_name)
+
     with open(new_file_name, 'w') as new_f:
         with open(filename, encoding='utf-8') as f:
             #filepaths_and_text = [line.strip().split(split) for line in f]
