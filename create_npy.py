@@ -164,6 +164,7 @@ def train(output_directory, log_directory, checkpoint_path, warm_start, n_gpus,
 
     train_loader, valset, collate_fn = prepare_dataloaders(hparams)
 
+    print("After prepare")
     
     for i, batch in enumerate(train_loader):
         print("Loop")
