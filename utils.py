@@ -24,8 +24,8 @@ def load_filepaths_and_text(filename, split=" "):
 
     filepaths_and_text = []
     print(filename)
-    name = filename.split(".")[0]
-    new_file_name = name + "_new.txt"
+    name = filename.split("/")[-1].split(".")[0]
+    new_file_name = hparmas.preprocess_path + "/" + name + "_new.txt"
 
     print(new_file_name)
 
