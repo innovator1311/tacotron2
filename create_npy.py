@@ -160,6 +160,7 @@ def train(output_directory, log_directory, checkpoint_path, warm_start, n_gpus,
     hparams (object): comma separated list of "name=value" pairs.
     """
     
+    print("Enter func")
 
     train_loader, valset, collate_fn = prepare_dataloaders(hparams)
 
