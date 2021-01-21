@@ -23,6 +23,7 @@ def load_wav_to_torch(full_path):
 def load_filepaths_and_text(filename, split=" "):
 
     filepaths_and_text = []
+    print(filename)
     name = filename.split(".")[0]
     new_file_name = name + "_new.txt"
 
