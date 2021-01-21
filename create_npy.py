@@ -159,52 +159,13 @@ def train(output_directory, log_directory, checkpoint_path, warm_start, n_gpus,
     rank (int): rank of current gpu
     hparams (object): comma separated list of "name=value" pairs.
     """
-    if hparams.distributed_run:
-        init_distributed(hparams, n_gpus, rank, group_name)
-
-    torch.manual_seed(hparams.seed)
-    torch.cuda.manual_seed(hparams.seed)
-
-    model = load_model(hparams)
-    learning_rate = hparams.learning_rate
-    optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate,
-                                 weight_decay=hparams.weight_decay)
-
-    if hparams.fp16_run:
-        from apex import amp
-        model, optimizer = amp.initialize(
-            model, optimizer, opt_level='O2')
-
-    if hparams.distributed_run:
-        model = apply_gradient_allreduce(model)
-
-    criterion = Tacotron2Loss()
-
-    logger = prepare_directories_and_logger(
-        output_directory, log_directory, rank)
+    
 
     train_loader, valset, collate_fn = prepare_dataloaders(hparams)
 
-    # Load checkpoint if one exists
-    iteration = 0
-    epoch_offset = 0
-    if checkpoint_path is not None:
-        if warm_start:
-            model = warm_start_model(
-                checkpoint_path, model, hparams.ignore_layers)
-        else:
-            model, optimizer, _learning_rate, iteration = load_checkpoint(
-                checkpoint_path, model, optimizer)
-            if hparams.use_saved_learning_rate:
-                learning_rate = _learning_rate
-            iteration += 1  # next iteration is iteration + 1
-            epoch_offset = max(0, int(iteration / len(train_loader)))
-
-    model.train()
-    is_overflow = False
-    # ================ MAIN TRAINNIG LOOP! ===================
     
     for i, batch in enumerate(train_loader):
+        print("Loop")
         pass
 
 
