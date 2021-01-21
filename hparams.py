@@ -27,7 +27,7 @@ def create_hparams(hparams_string=None, verbose=False):
         load_mel_from_disk=True,
 
         training_files='../vivos/train/prompts.txt', #MUST CHANGE
-        preprocess_path='../vivos/train'
+        preprocess_path='../vivos/train',
         validation_files='../SV2TTS/synthesizer/valid.txt', #MUST CHANE
         mel_path='../SV2TTS/synthesizer/mels/', #MUST CHANGE
         embed_path='../SV2TTS/synthesizer/embeds/', #MUST CHANE
@@ -40,19 +40,13 @@ def create_hparams(hparams_string=None, verbose=False):
         ################################
         
         max_wav_value=32768.0,
-        #sampling_rate=22050,
+        sampling_rate=22050,
         filter_length=1024,
-        #hop_length=256,
-        #win_length=1024,
+        hop_length=256,
+        win_length=1024,
         n_mel_channels=80,
         mel_fmin=0.0,
-        #mel_fmax=8000.0,
-
-        n_fft=800,  # Extra window size is filled with 0 paddings to match this parameter
-        hop_length=200,  # For 16000Hz, 200 = 12.5 ms (0.0125 * sample_rate)
-        win_length=800,  # For 16000Hz, 800 = 50 ms (If None, win_size = n_fft) (0.05 * sample_rate)
-        sampling_rate=16000,
-        mel_fmax=900.0,
+        mel_fmax=8000.0,
 
         ################################
         # Model Parameters             #
