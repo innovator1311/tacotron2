@@ -7,6 +7,9 @@ import layers
 from utils import load_wav_to_torch, load_filepaths_and_text
 from text import text_to_sequence
 
+from resemblyzer import VoiceEncoder, preprocess_wav
+from pathlib import Path
+
 
 class TextMelLoader(torch.utils.data.Dataset):
     """
@@ -45,6 +48,18 @@ class TextMelLoader(torch.utils.data.Dataset):
             audio_norm = audio_norm.unsqueeze(0)
             audio_norm = torch.autograd.Variable(audio_norm, requires_grad=False)
             melspec = self.stft.mel_spectrogram(audio_norm)
+
+            #Do the saving
+            np.save("../vivos_preprocess/mels/{}".format(filename), melspec)
+
+            fpath = Path("path_to_an_audio_file")
+            wav = preprocess_wav(file)
+
+            encoder = VoiceEncoder()
+            embed = encoder.embed_utterance(wav)
+            np.save("../vivos_preprocess/embeds/{}".format(filename), embed)
+            ##
+
             melspec = torch.squeeze(melspec, 0)
         else:
             #print("File name, ", filename)
