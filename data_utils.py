@@ -75,7 +75,7 @@ class TextMelLoader(torch.utils.data.Dataset):
 
             melspec = torch.squeeze(melspec, 0)
         else:
-            full_path = self.hparams.mel_path + filename
+            full_path = filename
             #print("File name, ", filename)
             melspec = torch.from_numpy(np.load(full_path))
             #melspec = melspec[:,:80]
