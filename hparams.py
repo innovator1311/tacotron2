@@ -24,7 +24,7 @@ def create_hparams(hparams_string=None, verbose=False):
         ################################
         # Data Parameters             #
         ################################
-        load_mel_from_disk=False,
+        load_mel_from_disk=True,
 
         training_files='../vivos_preprocess/train.txt', #MUST CHANGE
         #preprocess_path='../vivos_preprocess/train',
