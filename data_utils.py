@@ -35,7 +35,7 @@ class TextMelLoader(torch.utils.data.Dataset):
 
     def get_mel_text_pair(self, audiopath_and_text):
         # separate filename and text
-        audiopath, embed, text = audiopath_and_text[0], audiopath_and_text[1], audiopath_and_text[-1]
+        audiopath, embed, text = self.hparams.mel_path + audiopath_and_text[0], self.hparams.embed_path + audiopath_and_text[0], audiopath_and_text[1]
         text = self.get_text(text)
         mel = self.get_mel(audiopath)
 
@@ -48,8 +48,8 @@ class TextMelLoader(torch.utils.data.Dataset):
         print("Enter here first")
         if not self.load_mel_from_disk:
 
-            
-            full_path = "normalized/" + filename + ".wav"
+            full_path = self.hparams.mel_path + filename
+            #full_path = "normalized/" + filename + ".wav"
 
             audio, sampling_rate = load_wav_to_torch(full_path)
             if sampling_rate != self.stft.sampling_rate:
@@ -61,6 +61,7 @@ class TextMelLoader(torch.utils.data.Dataset):
             melspec = self.stft.mel_spectrogram(audio_norm)
 
             #Do the saving
+            '''
             np.save("../vivos_preprocess/mels/{}".format(filename), melspec)
 
             fpath = Path(full_path)
@@ -69,14 +70,16 @@ class TextMelLoader(torch.utils.data.Dataset):
             encoder = VoiceEncoder()
             embed = encoder.embed_utterance(wav)
             np.save("../vivos_preprocess/embeds/{}".format(filename), embed)
+            '''
             ##
 
             melspec = torch.squeeze(melspec, 0)
         else:
+            full_path = self.hparams.mel_path + filename
             #print("File name, ", filename)
-            melspec = torch.from_numpy(np.load(filename))
+            melspec = torch.from_numpy(np.load(full_path))
             #melspec = melspec[:,:80]
-            melspec = melspec.permute(1,0)
+        
             #print(melspec.shape)
             assert melspec.size(0) == self.stft.n_mel_channels, (
                 'Mel dimension mismatch: given {}, expected {}'.format(
@@ -133,18 +136,18 @@ class TextMelCollate():
         mel_padded.zero_()
         gate_padded = torch.FloatTensor(len(batch), max_target_len)
         gate_padded.zero_()
-       # embed_tensor = torch.FloatTensor(len(batch), 256)
+        embed_tensor = torch.FloatTensor(len(batch), 256)
 
         output_lengths = torch.LongTensor(len(batch))
         for i in range(len(ids_sorted_decreasing)):
             mel = batch[ids_sorted_decreasing[i]][1]
-           # embedd = batch[ids_sorted_decreasing[i]][2]
+            embedd = batch[ids_sorted_decreasing[i]][2]
 
             mel_padded[i, :, :mel.size(1)] = mel
             gate_padded[i, mel.size(1)-1:] = 1
             output_lengths[i] = mel.size(1)
-           # embed_tensor[i, :256] = embedd 
+            embed_tensor[i, :256] = embedd 
         
 
         return text_padded, input_lengths, mel_padded, gate_padded, \
-            output_lengths, None
+            output_lengths, embed_tensor

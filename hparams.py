@@ -26,11 +26,11 @@ def create_hparams(hparams_string=None, verbose=False):
         ################################
         load_mel_from_disk=False,
 
-        training_files='../train.txt', #MUST CHANGE
-        preprocess_path='../vivos/train',
-        validation_files='../SV2TTS/synthesizer/valid.txt', #MUST CHANE
-        mel_path='../SV2TTS/synthesizer/mels/', #MUST CHANGE
-        embed_path='../SV2TTS/synthesizer/embeds/', #MUST CHANE
+        training_files='../vivos_preprocess/train.txt', #MUST CHANGE
+        #preprocess_path='../vivos_preprocess/train',
+        validation_files='../vivos_preprocess/valid.txt', #MUST CHANE
+        mel_path='../vivos_preprocess/mels/', #MUST CHANGE
+        embed_path='../vivos_preprocess/embeds/', #MUST CHANE
         
 
         text_cleaners=['basic_cleaners'],
