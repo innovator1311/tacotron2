@@ -35,7 +35,7 @@ class TextMelLoader(torch.utils.data.Dataset):
 
     def get_mel_text_pair(self, audiopath_and_text):
         # separate filename and text
-        audiopath, embed, text = self.hparams.mel_path + audiopath_and_text[0], self.hparams.embed_path + audiopath_and_text[0], audiopath_and_text[1]
+        audiopath, embed, text = self.hparams.mel_path + audiopath_and_text[0] + ".npy", self.hparams.embed_path + audiopath_and_text[0] + ".npy", audiopath_and_text[1]
         text = self.get_text(text)
         mel = self.get_mel(audiopath)
 
@@ -45,7 +45,6 @@ class TextMelLoader(torch.utils.data.Dataset):
 
     def get_mel(self, filename):
 
-        print("Enter here first")
         if not self.load_mel_from_disk:
 
             full_path = self.hparams.mel_path + filename
@@ -92,7 +91,6 @@ class TextMelLoader(torch.utils.data.Dataset):
         return text_norm
 
     def __getitem__(self, index):
-        print("Go to index ", index)
         return self.get_mel_text_pair(self.audiopaths_and_text[index])
 
     def __len__(self):
