@@ -38,10 +38,10 @@ class TextMelLoader(torch.utils.data.Dataset):
         audiopath, embed, text = self.hparams.mel_path + audiopath_and_text[0] + ".npy", self.hparams.embed_path + audiopath_and_text[0] + ".npy", audiopath_and_text[1]
         text = self.get_text(text)
         mel = self.get_mel(audiopath)
-
-        #embed = torch.from_numpy(np.load(embed))
+        embed = torch.from_numpy(np.load(embed))
+        
         #return (text, mel, embed)
-        return (text, mel, None)
+        return (text, mel, embed)
 
     def get_mel(self, filename):
 
@@ -77,9 +77,10 @@ class TextMelLoader(torch.utils.data.Dataset):
             full_path = filename
             #print("File name, ", filename)
             melspec = torch.from_numpy(np.load(full_path))
+            melspec = melspec.squeeze()
             #melspec = melspec[:,:80]
-        
-            #print(melspec.shape)
+
+            
             assert melspec.size(0) == self.stft.n_mel_channels, (
                 'Mel dimension mismatch: given {}, expected {}'.format(
                     melspec.size(0), self.stft.n_mel_channels))
