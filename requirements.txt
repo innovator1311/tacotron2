@@ -13,4 +13,5 @@ viphoneme
 pillow
 torch==1.4.0
 numpy==1.17
+numba==0.48
 resemblyzer

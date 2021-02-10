@@ -11,7 +11,7 @@ from torch.utils.data.distributed import DistributedSampler
 from torch.utils.data import DataLoader
 
 from model import Tacotron2
-from data_utils import TextMelLoader, TextMelCollate
+from data_utils import NewTextMelLoader, TextMelCollate
 from loss_function import Tacotron2Loss
 from logger import Tacotron2Logger
 from hparams import create_hparams
@@ -41,8 +41,8 @@ def init_distributed(hparams, n_gpus, rank, group_name):
 
 def prepare_dataloaders(hparams):
     # Get data, data loaders and collate function ready
-    trainset = TextMelLoader(hparams.training_files, hparams)
-    valset = TextMelLoader(hparams.validation_files, hparams)
+    trainset = NewTextMelLoader(hparams.training_files, hparams)
+    valset = NewTextMelLoader(hparams.validation_files, hparams)
     collate_fn = TextMelCollate(hparams.n_frames_per_step)
 
     if hparams.distributed_run:
@@ -55,7 +55,7 @@ def prepare_dataloaders(hparams):
     train_loader = DataLoader(trainset, num_workers=1, shuffle=shuffle,
                               sampler=train_sampler,
                               batch_size=hparams.batch_size, pin_memory=False,
-                              drop_last=True, collate_fn=collate_fn)
+                              drop_last=False, collate_fn=collate_fn)
     return train_loader, valset, collate_fn
 
 
@@ -160,14 +160,12 @@ def train(output_directory, log_directory, checkpoint_path, warm_start, n_gpus,
     hparams (object): comma separated list of "name=value" pairs.
     """
     
-    print("Enter func")
+    
 
     train_loader, valset, collate_fn = prepare_dataloaders(hparams)
 
-    print("After prepare")
-    
     for i, batch in enumerate(train_loader):
-        print("Loop")
+        
         pass
 
 
