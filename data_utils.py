@@ -340,7 +340,7 @@ class NewTextMelLoader(torch.utils.data.Dataset):
 
     def get_mel(self, filename):
 
-        full_path = self.hparams.mel_path + filename
+        #full_path = self.hparams.mel_path + filename
         #full_path = "normalized/" + filename + ".wav"
 
         audio, sampling_rate = load_wav_to_torch(full_path)
