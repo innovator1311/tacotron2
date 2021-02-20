@@ -29,7 +29,7 @@ def create_hparams(hparams_string=None, verbose=False):
         training_files='../meta_2s.txt', #MUST CHANGE
         #preprocess_path='../vivos_preprocess/train',
         validation_files='../meta_2s.txt', #MUST CHANE
-        mel_path='../VinBigdata-VLSP2020-100h/', #MUST CHANGE
+        mel_path='../vlsp2020_train_set_02/', #MUST CHANGE
         embed_path='../VinBigdata-VLSP2020-100h/embeds/', #MUST CHANE
         
 
