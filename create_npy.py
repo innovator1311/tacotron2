@@ -11,7 +11,7 @@ from torch.utils.data.distributed import DistributedSampler
 from torch.utils.data import DataLoader
 
 from model import Tacotron2
-from data_utils import NewTextMelLoader, TextMelCollate
+from data_utils import NewTextMelLoader, NewTextMelCollate
 from loss_function import Tacotron2Loss
 from logger import Tacotron2Logger
 from hparams import create_hparams
@@ -43,7 +43,7 @@ def prepare_dataloaders(hparams):
     # Get data, data loaders and collate function ready
     trainset = NewTextMelLoader(hparams.training_files, hparams)
     valset = NewTextMelLoader(hparams.validation_files, hparams)
-    collate_fn = TextMelCollate(hparams.n_frames_per_step)
+    collate_fn = NewTextMelCollate(hparams.n_frames_per_step)
 
     if hparams.distributed_run:
         train_sampler = DistributedSampler(trainset)
