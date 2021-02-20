@@ -330,7 +330,7 @@ class NewTextMelLoader(torch.utils.data.Dataset):
 
     def get_mel_text_pair(self, audiopath_and_text):
         # separate filename and text
-        audiopath, embed, text = self.hparams.mel_path + audiopath_and_text[0] + ".npy", self.hparams.embed_path + audiopath_and_text[0] + ".npy", audiopath_and_text[1]
+        audiopath, embed, text = audiopath_and_text[0],  audiopath_and_text[0], audiopath_and_text[1]
         text = self.get_text(text)
         mel = self.get_mel(audiopath)
         embed = torch.from_numpy(np.load(embed))
@@ -340,7 +340,7 @@ class NewTextMelLoader(torch.utils.data.Dataset):
 
     def get_mel(self, filename):
 
-        #full_path = self.hparams.mel_path + filename
+        full_path = self.hparams.mel_path + filename + ".wav"
         #full_path = "normalized/" + filename + ".wav"
 
         audio, sampling_rate = load_wav_to_torch(full_path)
