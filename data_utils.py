@@ -302,7 +302,8 @@ class NewTextMelCollate():
         
 
         return text_padded, input_lengths, mel_padded, gate_padded, \
-            output_lengths, embed_tensor
+            output_lengths
+            #embed_tensor
 
 class NewTextMelLoader(torch.utils.data.Dataset):
     """
