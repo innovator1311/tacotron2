@@ -41,7 +41,7 @@ class TextMelLoader(torch.utils.data.Dataset):
         #embed = torch.from_numpy(np.load(embed))
         
         #return (text, mel, embed)
-        return (text, mel)
+        return (text, mel, embed)
 
     def get_mel(self, filename):
 
@@ -135,22 +135,21 @@ class TextMelCollate():
         mel_padded.zero_()
         gate_padded = torch.FloatTensor(len(batch), max_target_len)
         gate_padded.zero_()
-        #embed_tensor = torch.FloatTensor(len(batch), 256)
+        embed_tensor = torch.FloatTensor(len(batch), 256)
 
         output_lengths = torch.LongTensor(len(batch))
         for i in range(len(ids_sorted_decreasing)):
             mel = batch[ids_sorted_decreasing[i]][1]
-            #embedd = batch[ids_sorted_decreasing[i]][2]
+            embedd = batch[ids_sorted_decreasing[i]][2]
 
             mel_padded[i, :, :mel.size(1)] = mel
             gate_padded[i, mel.size(1)-1:] = 1
             output_lengths[i] = mel.size(1)
-            #embed_tensor[i, :256] = embedd 
+            embed_tensor[i, :256] = embedd 
         
 
         return text_padded, input_lengths, mel_padded, gate_padded, \
-            output_lengths
-            #embed_tensor
+            output_lengths, embed_tensor
 
 import random
 import numpy as np
@@ -356,11 +355,11 @@ class NewTextMelLoader(torch.utils.data.Dataset):
         #Do the saving
         np.save("../vinbigdata_preprocess/mels/{}".format(filename), melspec)
 
-        fpath = Path(full_path)
-        wav = preprocess_wav(fpath)
+        #fpath = Path(full_path)
+        #wav = preprocess_wav(fpath)
 
-        embed = self.encoder.embed_utterance(wav)
-        np.save("../vinbigdata_preprocess/embeds/{}".format(filename), embed)
+        #embed = self.encoder.embed_utterance(wav)
+        #np.save("../vinbigdata_preprocess/embeds/{}".format(filename), embed)
         ##
 
         melspec = torch.squeeze(melspec, 0)
