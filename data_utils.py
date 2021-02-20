@@ -353,7 +353,6 @@ class NewTextMelLoader(torch.utils.data.Dataset):
         melspec = self.stft.mel_spectrogram(audio_norm)
 
         #Do the saving
-        
         np.save("../vinbigdata_preprocess/mels/{}".format(filename), melspec)
 
         fpath = Path(full_path)
@@ -361,7 +360,6 @@ class NewTextMelLoader(torch.utils.data.Dataset):
 
         embed = self.encoder.embed_utterance(wav)
         np.save("../vinbigdata_preprocess/embeds/{}".format(filename), embed)
-        
         ##
 
         melspec = torch.squeeze(melspec, 0)
