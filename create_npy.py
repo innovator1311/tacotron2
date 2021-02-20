@@ -52,9 +52,9 @@ def prepare_dataloaders(hparams):
         train_sampler = None
         shuffle = True
 
-    train_loader = DataLoader(trainset, num_workers=1, shuffle=shuffle,
+    train_loader = DataLoader(trainset, num_workers=1, shuffle=False,
                               sampler=train_sampler,
-                              batch_size=hparams.batch_size, pin_memory=False,
+                              batch_size=128, pin_memory=False,
                               drop_last=False, collate_fn=collate_fn)
     return train_loader, valset, collate_fn
 

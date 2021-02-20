@@ -326,6 +326,7 @@ class NewTextMelLoader(torch.utils.data.Dataset):
         random.seed(hparams.seed)
         random.shuffle(self.audiopaths_and_text)
         self.hparams = hparams
+        self.encoder = VoiceEncoder()
 
     def get_mel_text_pair(self, audiopath_and_text):
         # separate filename and text
@@ -358,9 +359,8 @@ class NewTextMelLoader(torch.utils.data.Dataset):
         fpath = Path(full_path)
         wav = preprocess_wav(fpath)
 
-        encoder = VoiceEncoder()
-        embed = encoder.embed_utterance(wav)
-        np.save("../vivos_preprocess/embeds/{}".format(filename), embed)
+        embed = self.encoder.embed_utterance(wav)
+        np.save("../vinbigdata_preprocess/embeds/{}".format(filename), embed)
         
         ##
 
